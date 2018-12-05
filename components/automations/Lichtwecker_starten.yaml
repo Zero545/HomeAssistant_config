@@ -1,0 +1,27 @@
+# Wecker
+- alias: 'Wake Me Up'
+  trigger:
+    platform: template
+    value_template: '{{ (strptime(states.sensor.time.state, "%H:%M") - strptime("0", "%M")) == (strptime(states.sensor.alarm_time.state, "%H:%M") - strptime("20", "%M")) }}'
+  condition:
+    condition: or
+    conditions:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: input_boolean.alarmweekday
+            state: 'on'
+          - condition: time
+            weekday:
+              - mon
+              - tue
+              - wed
+              - thu
+              - fri
+      - condition: state
+        entity_id: input_boolean.alarmweekday
+        state: 'off'
+  action:
+    service: script.wecker_steuerung
+    data_template:
+      stufe: 0

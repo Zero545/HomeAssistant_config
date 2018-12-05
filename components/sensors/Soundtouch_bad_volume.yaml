@@ -1,0 +1,6 @@
+# Überwachen von soundtouch Lautstärke
+- platform: template
+  sensors:
+    soundtouch_badezimmer_volume:
+      value_template: '{{ states.media_player.soundtouch_badezimmer.attributes.volume_level|float }}'
+      friendly_name: 'Soundtouch Badezimmer Volume'

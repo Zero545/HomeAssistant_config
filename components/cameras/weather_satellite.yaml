@@ -1,0 +1,6 @@
+#- platform: generic
+#  still_image_url: https://api.sat24.com/animated/EU/visual/3/W_dot_%20Europe%20Standard%20Time/6434705
+#  name: Bewölkung
+#- platform: generic
+#  still_image_url: https://api.sat24.com/animated/EU/rainTMC/3/W_dot_%20Europe%20Standard%20Time/3844793
+#  name: Regen

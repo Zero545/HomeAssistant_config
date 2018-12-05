@@ -1,0 +1,45 @@
+  led_leiste_timer:
+      alias: "LED Leisten Timer"
+      sequence:
+      - service: light.turn_on
+        data:
+          entity_id: light.wohnzimmer_ledleiste
+      - service: timer.cancel
+        data:
+          entity_id: timer.countdown
+      - service: timer.start
+        data_template:
+         entity_id: timer.countdown
+         duration: '{{ states.input_number.slider1.state | int }}:{{ states.input_number.slider2.state | int }}:00'
+      - delay: '{{ states.input_number.slider1.state | int }}:{{ states.input_number.slider2.state | int }}:00'
+      - service: light.turn_off
+        data:
+          entity_id: light.wohnzimmer_ledleiste
+  start_timer:
+    alias: Start timer
+    sequence:
+      - service: timer.cancel
+        data:
+          entity_id: timer.countdown
+      - service: timer.start
+        data_template:
+          entity_id: timer.countdown
+          duration: '00:{{ states.input_number.slider2.state | int }}:00'
+  pause_timer:
+    alias: Pause timer
+    sequence:
+      - service: timer.pause
+        data:
+          entity_id: timer.countdown
+  cancel_timer:
+    alias: Cancel timer
+    sequence:
+      - service: timer.cancel
+        data:
+          entity_id: timer.countdown
+  finish_timer:
+    alias: Finish timer
+    sequence:
+      - service: timer.finish
+        data:
+          entity_id: timer.countdown

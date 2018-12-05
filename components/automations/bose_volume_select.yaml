@@ -1,0 +1,20 @@
+# Bose Lautstärke einstellen
+- alias: 'Lautstärke'
+  trigger:
+    platform: state
+    entity_id: input_number.bose_volume
+  action:
+    service: media_player.volume_set
+    data_template:
+      entity_id: media_player.soundtouch_badezimmer 
+      volume_level: "{{ states.input_number.bose_volume.state }}"
+
+- alias: 'Bose Volume Changed'
+  trigger:
+    platform: state
+    entity_id: sensor.soundtouch_badezimmer_volume
+  action:
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.bose_volume
+        value: "{{ states.media_player.soundtouch_badezimmer.attributes.volume_level }}"

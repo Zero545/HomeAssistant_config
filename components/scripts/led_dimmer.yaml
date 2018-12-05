@@ -1,0 +1,34 @@
+#########LED Lampe Dimming
+
+# Skript für Lichtwecker (mit loop)
+  dim_up_looper:
+    alias: loop
+    sequence:
+      - delay:
+          milliseconds: 100
+      - alias: licht
+        service: script.dim_up
+        data_template:
+          entity: '{{ent}}'
+          prozent: '{{ stufe | int + 10 }}'
+          led_bool: '{{ bool_id }}'
+  dim_up:
+    alias: lichtloop
+    sequence:
+      - condition: template
+        value_template: '{{ prozent | int <= 100 }}'
+      - condition: template
+        value_template: "{{ is_state(led_bool, 'on') }}"
+      - alias: heller
+        service: light.turn_on
+        data_template:
+          entity_id: '{{ entity }}'
+          brightness_pct: '{{ prozent }}'
+      - delay:
+          milliseconds: 100
+      - alias: next
+        service: script.dim_up_looper
+        data_template:
+          stufe: '{{prozent}}'
+          bool_id: '{{led_bool}}'
+          ent: '{{ entity }}'

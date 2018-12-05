@@ -1,0 +1,14 @@
+# roborock status text
+- platform: template
+  sensors:
+    vacuum_status:
+      friendly_name: "Vacuum - Status"
+      value_template: "Status: {{ states.vacuum.fernando.attributes.status }}"
+# roborock battery percent  
+- platform: template
+  sensors:
+    vacuum_battery:
+      friendly_name: "Vacuum - Battery"
+      value_template: "Battery: {{ states.vacuum.fernando.attributes.battery_level }}"
+      device_class: battery
+      unit_of_measurement: '%'

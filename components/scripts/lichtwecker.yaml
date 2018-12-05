@@ -1,0 +1,58 @@
+# Skript für Lichtwecker (mit loop)
+  wecker_steuerung:
+    alias: loop
+    sequence:
+      - delay:
+          milliseconds: 100
+      - alias: licht
+        service: script.lichtsteuerung
+        data_template:
+          entity: light.schlafzimmer_led
+          prozent: '{{ stufe | int + 1 }}'
+      - alias: radio
+        service: script.radiosteuerung
+        data_template:
+          entity: media_player.soundtouch_badezimmer
+          laut: '{{ stufe | int + 1 }}'
+  lichtsteuerung:
+    alias: lichtloop
+    sequence:
+      - condition: template
+        value_template: '{{ prozent | int <= 50 }}'
+      - alias: heller
+        service: light.turn_on
+        data_template:
+          entity_id: '{{ entity }}'
+          brightness_pct: '{{ prozent }}'
+      - delay:
+          seconds: 22
+      - alias: next
+        service: script.wecker_steuerung
+        data_template:
+          stufe: '{{prozent}}'
+  radiosteuerung:
+    alias: radioloop
+    sequence:
+      - condition: template
+        value_template: '{{ laut | int > 50 }}'
+      - condition: template
+        value_template: '{{ laut | int <= 60 }}'
+      - alias: lauter
+        service: media_player.volume_set
+        data_template:
+          entity_id: '{{ entity }}'
+          volume_level: '{{ (laut | int - 50) * 0.03 }}'
+      - delay:
+          seconds: 6
+      - alias: next
+        service: script.wecker_steuerung
+        data_template:
+          stufe: '{{ laut }}'
+      - condition: template
+        value_template: '{{ laut | int == 51 }}'
+      - alias: Radio an
+        service: media_player.play_media
+        data_template:
+          entity_id: media_player.soundtouch_badezimmer   
+          media_content_id: 2
+          media_content_type: 'music'

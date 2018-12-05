@@ -1,0 +1,66 @@
+# Telegram Befehle
+
+- alias: 'Einkaufliste senden'
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/einkaufsliste'
+  action:
+    - service: telegram_bot.send_message
+      data_template:
+        message: '{{states.sensor.shopping_list.state}}'
+        target: '{{ trigger.event.data.user_id }}'
+
+- alias: 'Einkaufliste Element hinzufügen'
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/hinzufuegen'
+  action:
+    - service: shopping_list.add_item
+      data_template:
+        name: '{{trigger.event.data["args"]|join(" ")}}'
+    - service: telegram_bot.send_message
+      data_template:
+        message: '{{trigger.event.data["args"]|join(" ") + " wurde der Einkaufsliste hinzugefügt."}}'
+        target: '{{ trigger.event.data.user_id }}'
+
+- alias: 'Einkaufliste Element löschen'
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/loeschen'
+  action:
+    - service: shopping_list.complete_item
+      data_template:
+        name: '{{trigger.event.data["args"]|join(" ")}}'
+    - service: telegram_bot.send_message
+      data_template:
+        message: '{{trigger.event.data["args"]|join(" ") + " wird von der Einkaufsliste gestrichen."}}'
+        target: '{{ trigger.event.data.user_id }}'
+
+# Das muss wohl mit einem Skript gemacht werden        
+#- alias: 'Einkaufliste leeren'
+#  trigger:
+#    platform: event
+#    event_type: telegram_command
+#    event_data:
+#      command: '/loeschen'
+#  action:
+#    - service: script.clear_shopping_list
+
+- alias: 'Telegram Licht aus'
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/allesaus'
+  action:
+    - service: script.all_off
+    - service: telegram_bot.send_message
+      data_template:
+        message: '{{"Licht wird abgeschaltet."}}'
+        target: '{{ trigger.event.data.user_id }}'

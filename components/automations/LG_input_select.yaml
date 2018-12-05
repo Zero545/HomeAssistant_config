@@ -1,0 +1,26 @@
+# Sender wechseln für LG Fernseher
+- id: LG_channels
+  alias: LG Kanal Auswahl
+  trigger:
+    platform: state
+    entity_id:
+      - input_select.kanal
+  condition:
+  - condition: template
+    value_template: >
+      {% if is_state("input_select.kanal", "None") %}
+        false
+      {% else %}
+        true
+      {% endif %}
+  action:
+  - service: media_player.play_media
+    data_template:
+      entity_id: media_player.lg_tv   
+      media_content_id: >
+        {% if is_state("input_select.kanal", "Pro7") %} 
+          ProSieben HD
+        {% elif is_state("input_select.kanal", "VIVA/CC") %} 
+          VIVA/COMEDY CENTRAL HD
+        {% endif %}
+      media_content_type: 'channel'

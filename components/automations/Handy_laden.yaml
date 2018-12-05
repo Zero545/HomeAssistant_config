@@ -1,0 +1,38 @@
+# Ede's lade Skript ausschalten, wenn die Steckdose abgeschaltet wird
+- id: autooff_ede
+  alias: Sonoff 1 Cancel Script on off
+  trigger:
+  - platform: state
+    entity_id: switch.sonoff_1
+    to: 'off'
+  action:
+  - entity_id: script.handyladen
+    service: script.turn_off
+# Steffis lade Skript ausschalten, wenn die Steckdose abgeschaltet wird
+- id: autooff_steffi
+  alias: Sonoff 2 Cancel Script on off
+  trigger:
+  - platform: state
+    entity_id: switch.sonoff_2
+    to: 'off'
+  action:
+  - entity_id: script.handyladen2
+    service: script.turn_off
+# Steffis Steckdose immer nach 2 Stunden abschalten, wenn nichts eingestellt ist
+- id: autotimer_steffi
+  alias: Sonoff 2 two hour default
+  trigger:
+  - platform: state
+    entity_id: switch.sonoff_2
+    to: 'on'
+  condition: 
+  - condition: state
+    entity_id: script.handyladen2
+    state: 'off'
+  action:
+  - service: input_number.set_value
+    data_template:
+      entity_id: input_number.ladezeit2
+      value: '120'
+  - entity_id: script.handyladen2
+    service: script.turn_on

@@ -1,0 +1,886 @@
+title: Smart Home
+# Include external resources
+resources:
+  - url: /local/custom-ui/vertical-stack-in-card.js?v=0.0.8
+    type: js
+  - url: /local/mini-media-player-bundle.js?v=0.9.5
+    type: module
+  - url: /local/tracker-card.js?v=0.1.5
+    type: js
+#  - url: /local/my-custom-card.js
+#    type: js
+#  - url: /local/my-webfont.css
+#    type: css
+
+# Optional background for all views. Check https://developer.mozilla.org/en-US/docs/Web/CSS/background for more examples.
+#background: center / cover no-repeat url("/background.png") fixed
+
+# Exclude entities from "Unused entities" view
+excluded_entities:
+#  - weblink.router
+views:
+################################################################################################################################
+    # View tab title.
+  - title: Home
+    icon: mdi:home
+    # Unique id for direct access /lovelace/${id}. If you don't specify one, it is added automatically.
+    id: view_home
+    # Optional background (overwrites the global background).
+    # background: radial-gradient(crimson, skyblue)
+    # Each view can have a different theme applied. Theme should be defined in the frontend.
+    # theme: dark-mode
+    # The cards to show on this view.
+    cards:
+        # The filter card will filter entities for their state
+      - id: card_temp_bedroom
+        type: entities
+        title: Schlafzimmer
+        show_header_toggle: false
+        entities:
+          - sensor.temperature_wohnzimmer
+          - sensor.humidity_wohnzimmer
+      - id: card_standleuchten # Every card needs an ID, if you don't specify one, it is added automatically.
+        type: entities
+        title: Standleuchten
+        show_header_toggle: true
+        entities:
+          - light.schlafzimmer_led
+          - light.wohnzimmer_led
+      - id: card_steckdose_ede
+        type: entities
+        title: Steckdose Ede
+        show_header_toggle: false
+        entities:
+          - switch.sonoff_1
+          - input_number.ladezeit
+          - script.handyladen
+      - id: card_steckdose_steffi
+        type: entities
+        title: Steckdose Steffi
+        show_header_toggle: false
+        entities:
+          - switch.sonoff_2
+          - input_number.ladezeit2
+          - script.handyladen2
+      - id: card_ledleiste
+        type: entities
+        title: LED Leiste
+        show_header_toggle: false
+        entities:
+          - light.wohnzimmer_ledleiste
+          - input_number.speed
+      - id: card_pi_hole
+        type: entities
+        title: Pi-Hole
+        show_header_toggle: false
+        entities:
+          - switch.pihole_switch
+################################################################################################################################
+  - title: Übersicht
+    icon: mdi:floor-plan
+    panel: true
+    # Unique id for direct access /lovelace/${id}. If you don't specify one, it is added automatically.
+    id: view_plan
+    # Optional background (overwrites the global background).
+    # background: radial-gradient(crimson, skyblue)
+    # Each view can have a different theme applied. Theme should be defined in the frontend.
+    # theme: dark-mode
+    # The cards to show on this view.
+    cards:
+      - type: picture-elements
+        id: card_floor_plan
+        #title: Remote
+        image: /local/pics/Grundriss_3d.png
+        aspect_ratio: 50%
+        elements:
+        #######Roborock elements################################
+          - type: image
+            image: /local/icons/entity_icons/Roborock_active.png
+            entity: input_boolean.kueche
+            state_image:
+              'off': /local/icons/entity_icons/Roborock_inactive.png
+            tap_action: toggle
+            style:
+              top: 28%
+              left: 26%
+              width: 4%
+              z-index: 2
+          - type: image
+            image: /local/icons/entity_icons/Roborock_active.png
+            entity: input_boolean.wohnzimmer
+            state_image:
+              'off': /local/icons/entity_icons/Roborock_inactive.png
+            tap_action: toggle
+            style:
+              top: 23%
+              left: 39%
+              width: 4%
+              z-index: 2
+          - type: image
+            image: /local/icons/entity_icons/Roborock_active.png
+            entity: input_boolean.esszimmer
+            state_image:
+              'off': /local/icons/entity_icons/Roborock_inactive.png
+            tap_action: toggle
+            style:
+              top: 69%
+              left: 32%
+              width: 4%
+              z-index: 2
+          - type: image
+            image: /local/icons/entity_icons/Roborock_active.png
+            entity: input_boolean.flur
+            state_image:
+              'off': /local/icons/entity_icons/Roborock_inactive.png
+            tap_action: toggle
+            style:
+              top: 23%
+              left: 60%
+              width: 4%
+              z-index: 2
+          - type: image
+            image: /local/icons/entity_icons/Roborock_active.png
+            entity: input_boolean.bad
+            state_image:
+              'off': /local/icons/entity_icons/Roborock_inactive.png
+            tap_action: toggle
+            style:
+              top: 69%
+              left: 65%
+              width: 4%
+              z-index: 2
+          - type: image
+            image: /local/icons/entity_icons/Roborock_active.png
+            entity: input_boolean.schlafzimmer
+            state_image:
+              'off': /local/icons/entity_icons/Roborock_inactive.png
+            tap_action: toggle
+            style:
+              top: 69%
+              left: 82%
+              width: 4%
+              z-index: 2
+          - type: icon
+            icon: mdi:robot-vacuum
+            entity: vacuum.fernando
+            style:
+              top: 40%
+              left: 58.5%
+              width: 5%
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+        #####lights#####################################################
+          - type: state-icon
+            tap_action: toggle
+            hold_action: more-info
+            entity: light.schlafzimmer_led
+            style:
+              top: 70%
+              left: 90%
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: state-icon
+            tap_action: toggle
+            hold_action: more-info
+            entity: light.wohnzimmer_led
+            style:
+              top: 47%
+              left: 43%
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: state-icon
+            tap_action: toggle
+            hold_action: more-info
+            entity: light.wohnzimmer_ledleiste
+            style:
+              top: 28%
+              left: 18%
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+        #####room-lights################################################
+          - type: icon
+            tap_action: toggle
+            entity: input_boolean.licht_kueche
+            icon: mdi:ceiling-light
+            style:
+              top: 34%
+              left: 22%
+              width: 3%
+              color: '#BBB'
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: image
+            entity: input_boolean.licht_kueche
+            image: /local/pics/kueche_overlay.png
+            state_filter:
+              "off": opacity(50%)
+              "on": opacity(1%)
+            style:
+              pointer-events: none
+              top: 50%
+              left: 50%
+              width: 100%
+              z-index: 1
+          - type: icon
+            tap_action: toggle
+            entity: input_boolean.licht_wohnzimmer
+            icon: mdi:ceiling-light
+            style:
+              top: 34%
+              left: 40%
+              width: 3%
+              color: '#BBB'
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: image
+            entity: input_boolean.licht_wohnzimmer
+            image: /local/pics/wohnzimmer_overlay.png
+            state_filter:
+              "off": opacity(50%)
+              "on": opacity(1%)
+            style:
+              pointer-events: none
+              top: 50%
+              left: 50%
+              width: 100%
+              z-index: 1
+          - type: icon
+            tap_action: toggle
+            entity: input_boolean.licht_esszimmer
+            icon: mdi:ceiling-light
+            style:
+              top: 59%
+              left: 27%
+              width: 3%
+              color: '#BBB'
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: image
+            entity: input_boolean.licht_esszimmer
+            image: /local/pics/esszimmer_overlay.png
+            state_filter:
+              "off": opacity(50%)
+              "on": opacity(1%)
+            style:
+              pointer-events: none
+              top: 50%
+              left: 50%
+              width: 100%
+              z-index: 1
+          - type: icon
+            tap_action: toggle
+            entity: input_boolean.licht_bad
+            icon: mdi:ceiling-light
+            style:
+              top: 59%
+              left: 68%
+              width: 3%
+              color: '#BBB'
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: image
+            entity: input_boolean.licht_bad
+            image: /local/pics/bad_overlay.png
+            state_filter:
+              "off": opacity(50%)
+              "on": opacity(1%)
+            style:
+              pointer-events: none
+              top: 50%
+              left: 50%
+              width: 100%
+              z-index: 1
+          - type: icon
+            tap_action: toggle
+            entity: input_boolean.licht_flur
+            icon: mdi:ceiling-light
+            style:
+              top: 31%
+              left: 63%
+              width: 3%
+              color: '#BBB'
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: image
+            entity: input_boolean.licht_flur
+            image: /local/pics/flur_overlay.png
+            state_filter:
+              "off": opacity(50%)
+              "on": opacity(1%)
+            style:
+              pointer-events: none
+              top: 50%
+              left: 50%
+              width: 100%
+              z-index: 1
+          - type: icon
+            tap_action: toggle
+            entity: input_boolean.licht_balkon
+            icon: mdi:ceiling-light
+            style:
+              top: 59%
+              left: 8%
+              width: 3%
+              color: '#BBB'
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: image
+            entity: input_boolean.licht_balkon
+            image: /local/pics/balkon_overlay.png
+            state_filter:
+              "off": opacity(50%)
+              "on": opacity(1%)
+            style:
+              pointer-events: none
+              top: 50%
+              left: 50%
+              width: 100%
+              z-index: 1
+          - type: icon
+            tap_action: toggle
+            entity: input_boolean.licht_abstell
+            icon: mdi:ceiling-light
+            style:
+              top: 23%
+              left: 55%
+              width: 3%
+              color: '#BBB'
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: image
+            entity: input_boolean.licht_abstell
+            image: /local/pics/abstell_overlay.png
+            state_filter:
+              "off": opacity(50%)
+              "on": opacity(1%)
+            style:
+              pointer-events: none
+              top: 50%
+              left: 50%
+              width: 100%
+              z-index: 1
+          - type: icon
+            tap_action: toggle
+            entity: input_boolean.licht_arbeit
+            icon: mdi:ceiling-light
+            style:
+              top: 66%
+              left: 48%
+              width: 3%
+              color: '#BBB'
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: image
+            entity: input_boolean.licht_arbeit
+            image: /local/pics/arbeit_overlay.png
+            state_filter:
+              "off": opacity(50%)
+              "on": opacity(1%)
+            style:
+              pointer-events: none
+              top: 50%
+              left: 50%
+              width: 100%
+              z-index: 1
+          - type: icon
+            tap_action: toggle
+            entity: input_boolean.licht_schlafzimmer
+            icon: mdi:ceiling-light
+            style:
+              top: 57%
+              left: 87%
+              width: 3%
+              color: '#BBB'
+              --iron-icon-stroke-color: '#000'
+              --iron-icon-width: 100%
+              --iron-icon-height: 100%
+              z-index: 2
+          - type: image
+            entity: input_boolean.licht_schlafzimmer
+            image: /local/pics/schlafzimmer_overlay.png
+            state_filter:
+              "off": opacity(50%)
+              "on": opacity(1%)
+            style:
+              pointer-events: none
+              top: 50%
+              left: 50%
+              width: 100%
+              z-index: 1
+          #####climate################################################    
+          - type: state-label
+            entity: sensor.temperature_wohnzimmer
+            prefix: "Temp: "
+            style:
+              color: '#FFF'
+              font-size: 130%
+              top: 39.2%
+              left: 80%
+              z-index: 2
+          - type: state-label
+            entity: sensor.humidity_wohnzimmer
+            prefix: "Feucht: "
+            style:
+              color: '#FFF'
+              font-size: 130%
+              top: 42.2%
+              left: 79.5%
+              z-index: 2
+              
+          #####buttons################################################
+          - type: service-button
+            title: Alles aus
+            service: script.all_off
+            style:
+              top: 20%
+              left: 80%
+              color: white
+          #####media##################################################
+          - type: image
+            image: /local/pics/bose_metal.png
+            entity: media_player.soundtouch_badezimmer
+            tap_action: navigate
+            navigation_path: /lovelace/view_bose_badezimmer
+            style:
+              color: white
+              top: 70%
+              left: 71%
+              width: 7%
+              z-index: 2
+              
+################################################################################################################################
+  - icon: mdi:robot-vacuum
+    id: view_roborock
+    title: Fernando
+    cards:
+      - id: card_roborock
+        title: Fernando
+        type: entities
+        show_header_toggle: false
+        entities:
+          - vacuum.fernando
+          - script.vacuum_cleaning_spot
+          - script.vacuum_bad
+      - id: card_cleaning_zones
+        title: Räume
+        type: entities
+        show_header_toggle: false
+        entities:
+          - input_boolean.wohnzimmer
+          - input_boolean.esszimmer
+          - input_boolean.bad
+          - input_boolean.kueche
+          - input_boolean.schlafzimmer
+          - input_boolean.flur
+          - script.vacuum_selected
+################################################################################################################################
+    # Specify a tab icon if you want the view tab to be an icon.
+  - icon: mdi:television
+    # Title of the view. Will be used as the tooltip for tab icon
+    id: view_media
+    title: Media
+    cards:
+        # Entities card will take a list of entities and show their state.
+      - id: card_lg_tv
+        title: LG Fernseher
+        type: media-control
+        entity: media_player.lg_tv
+
+
+      # - type: custom:vertical-stack-in-card
+        # id: card_fernbedienung
+        # cards:
+          # - type: picture-elements
+            # id: card_input_select
+            # #title: Remote
+            # image: /local/icons/media_icons/lg_logo.png
+            # aspect_ratio: 50%
+            # elements:
+              # - type: image
+                # image: /local/icons/media_icons/power-logo.png
+                # entity: media_player.lg_tv
+                # state_image:
+                  # 'off': /local/icons/media_icons/power-logo_active.png
+                # tap_action: call-service
+                # service: media_player.turn_off
+                # data:
+                  # entity_id: media_player.lg_tv
+                # style:
+                  # top: 25%
+                  # left: 10%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+              # - type: image
+                # image: /local/icons/media_icons/tv.png
+                # entity: sensor.lg_tv_source
+                # state_image:
+                  # 'LiveTV': /local/icons/media_icons/tv-active.png
+                # tap_action: call-service
+                # service: media_player.select_source
+                # service_data:
+                  # entity_id: media_player.lg_tv
+                  # source: LiveTV
+                # style:
+                  # top: 25%
+                  # left: 30%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+              # - type: image
+                # image: /local/icons/media_icons/netflix.png
+                # entity: sensor.lg_tv_source
+                # state_image:
+                  # 'Netflix': /local/icons/media_icons/netflix-active.png
+                # tap_action: call-service
+                # service: media_player.select_source
+                # service_data:
+                  # entity_id: media_player.lg_tv
+                  # source: Netflix
+                # style:
+                  # top: 25%
+                  # left: 50%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+              # - type: image
+                # image: /local/icons/media_icons/laptop.png
+                # entity: sensor.lg_tv_source
+                # state_image:
+                  # 'PC': /local/icons/media_icons/laptop-active.png
+                # tap_action: call-service
+                # service: media_player.select_source
+                # service_data:
+                  # entity_id: media_player.lg_tv
+                  # source: PC
+                # style:
+                  # top: 25%
+                  # left: 70%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+              # - type: image
+                # image: /local/icons/media_icons/vol_-.png
+                # tap_action: none
+# #                tap_action: call-service
+# #                service: script.volume_down
+                # style:
+                  # top: 42%
+                  # left: 90%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+              # - type: image
+                # image: /local/icons/media_icons/vol_+.png
+                # tap_action: none
+# #                tap_action: call-service
+# #                service: script.volume_up
+                # style:
+                  # top: 25%
+                  # left: 90%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+              # - type: image
+                # image: /local/icons/media_icons/vol_btn_border.png
+                # style:
+                  # top: 38%
+                  # left: 90%
+                  # width: 69px
+                  # height: 155px
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 1
+              # - type: image
+                # image: /local/icons/media_icons/horizontal_Rule.png
+                # style:
+                  # top: 34%
+                  # left: 40%
+                  # width: 70%
+                  # height: 2px
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 1
+# #####2. Reihe Source Elemente
+              # - type: image
+                # image: /local/icons/media_icons/wiiu.png
+                # entity: sensor.lg_tv_source
+                # state_image:
+                  # 'Wii U': /local/icons/media_icons/wiiu-active.png
+                # tap_action: call-service
+                # service: media_player.select_source
+                # service_data:
+                  # entity_id: media_player.lg_tv
+                  # source: Wii U
+                # style:
+                  # top: 42%
+                  # left: 10%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+              # - type: image
+                # image: /local/icons/media_icons/playstation.png
+                # entity: sensor.lg_tv_source
+                # state_image:
+                  # 'PS3': /local/icons/media_icons/playstation-active.png
+                # tap_action: call-service
+                # service: media_player.select_source
+                # service_data:
+                  # entity_id: media_player.lg_tv
+                  # source: PS3
+                # style:
+                  # top: 42%
+                  # left: 30%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+              # - type: image
+                # image: /local/icons/media_icons/spotify.png
+                # entity: sensor.lg_tv_source
+                # state_image:
+                  # 'Spotify Music – kostenlos auf LG TV Musik hören': /local/icons/media_icons/spotify-active.png
+                # tap_action: call-service
+                # service: media_player.select_source
+                # service_data:
+                  # entity_id: media_player.lg_tv
+                  # source: Spotify Music – kostenlos auf LG TV Musik hören
+                # style:
+                  # top: 42%
+                  # left: 50%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+              # - type: image
+                # image: /local/icons/media_icons/youtube.png
+                # entity: sensor.lg_tv_source
+                # state_image:
+                  # 'YouTube': /local/icons/media_icons/youtube-active.png
+                # tap_action: call-service
+                # service: media_player.select_source
+                # service_data:
+                  # entity_id: media_player.lg_tv
+                  # source: YouTube
+                # style:
+                  # top: 42%
+                  # left: 70%
+                  # width: 54px
+                  # height: 54px
+                  # background-color: rgb(255, 255, 255, 0.0)
+                  # filter: invert(0.20)
+                  # border-radius: 4px
+                  # z-index: 2
+
+          # - type: entities
+            # entities:
+              # - input_number.bose_volume
+
+
+################################################################################################################################
+  - icon: mdi:speaker-wireless
+    id: view_bose_badezimmer
+    title: Bose Soundtouch
+    cards:
+      - type: custom:vertical-stack-in-card
+        id: bose_badezimmer
+        cards: 
+          - id: bose_badezimmer_control
+            type: custom:mini-media-player
+            icon: mdi:speaker
+            entity: media_player.soundtouch_badezimmer
+            hide_volume: true
+            show_progress: true
+            power_color: true
+          - type: horizontal-stack
+            cards:
+              - type: entity-button
+                name: 1Live
+                icon: mdi:numeric-1
+                tap_action: call-service
+                entity: media_player.soundtouch_badezimmer 
+                service: media_player.play_media
+                service_data: 
+                  media_content_id: 1
+                  media_content_type: 'music'
+              - type: entity-button
+                tap_action: call-service
+                icon: mdi:numeric-2
+                name: Hochstift
+                entity: media_player.soundtouch_badezimmer 
+                service: media_player.play_media
+                service_data: 
+                  media_content_id: 2
+                  media_content_type: 'music'  
+              - type: entity-button
+                icon: mdi:numeric-3
+                name: Charivari
+                tap_action: call-service
+                entity: media_player.soundtouch_badezimmer 
+                service: media_player.play_media
+                service_data: 
+                  media_content_id: 3
+                  media_content_type: 'music'
+          - type: horizontal-stack
+            cards:
+              - type: entity-button
+                name: Paloma
+                icon: mdi:numeric-4
+                tap_action: call-service
+                entity: media_player.soundtouch_badezimmer 
+                service: media_player.play_media
+                service_data: 
+                  media_content_id: 4
+                  media_content_type: 'music'
+              - type: entity-button
+                tap_action: call-service
+                icon: mdi:numeric-5
+                name: Weihnachten
+                entity: media_player.soundtouch_badezimmer 
+                service: media_player.play_media
+                service_data: 
+                  media_content_id: 5
+                  media_content_type: 'music'
+              - type: entity-button
+#                  tap_action: call-service
+                icon: mdi:numeric-6
+                name: TBD
+                entity: media_player.soundtouch_badezimmer 
+                service: media_player.play_media
+                service_data: 
+                  media_content_id: 6
+                  media_content_type: 'music' 
+          - id: bose_badezimmer_volume
+            type: entities
+            entities: 
+              - input_number.bose_volume
+## TODO: Mute Button hinzufügen
+          - type: conditional
+            conditions:
+              - entity: media_player.soundtouch_badezimmer 
+                state_not: "off"
+            card:
+                type: horizontal-stack
+                cards:
+                  - type: entity-button
+                    tap_action: call-service
+                    icon: mdi:wifi
+                    name: Verbinden
+                    entity: media_player.soundtouch_badezimmer 
+                    service: media_player.soundtouch_play_everywhere
+                    service_data: 
+                      master: media_player.soundtouch_badezimmer
+# Kann man prüfen, ob eine Zone existiert?
+                  - type: entity-button
+                    tap_action: call-service
+                    icon: mdi:wifi-off
+                    name: Trennen
+                    entity: media_player.soundtouch_badezimmer 
+                    service: media_player.soundtouch_remove_zone_slave
+                    service_data: 
+                      master: media_player.soundtouch_badezimmer
+    # Hier muss das Wohnzimmer eingestellt werden
+                      slaves: 
+                        - media_player.soundtouch_badezimmer
+
+# Home button test,  but does not look good...              
+#          - type: markdown
+#            content: >
+#              [<img src="https://image.flaticon.com/icons/svg/25/25694.svg" width="100">](http://192.168.0.39:8123/lovelace/view_plan) 
+
+################################################################################################################################
+  - icon: mdi:cart
+    id: view_shopping_list
+    title: Einkaufsliste
+    cards:
+      - id: card_shopping_list
+        title: Einkaufsliste
+        type: shopping-list
+              
+################################################################################################################################
+  - icon: mdi:alarm
+    id: view_wecker
+    title: Wecker
+    cards:
+      - id: card_wecker
+        title: Wecker
+        type: entities
+        show_header_toggle: false
+        entities:
+          - automation.wake_me_up
+          - sensor.alarm_time
+          - input_number.alarmhour
+          - input_number.alarmminutes
+          - input_boolean.alarmweekday
+          
+################################################################################################################################
+  - icon: mdi:ninja
+    id: view_automations
+    title: Automatisierungen
+    cards:
+      - id: card_automations
+        title: Automatisierungen
+        type: entities
+        show_header_toggle: false
+        entities:
+          - automation.licht_an_bei_sonnenuntergang
+          - automation.licht_aus_um_11
+          - automation.automatic_theme_change
+          - automation.sonoff_2_two_hour_default
+          - automation.morgens_bad_saugen
+          - automation.zonenreinigung_automatisch_starten
+      - type: custom:tracker-card
+        id: custom_card_updater
+        title: Custom Cards
+        trackers:
+          - sensor.custom_card_tracker
+          - sensor.custom_component_tracker

@@ -1,0 +1,403 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret lat
+  longitude: !secret long
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 0
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Berlin
+  # Customization file
+  customize: !include customize.yaml
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+  themes: !include components/themes.yaml
+
+# Enables configuration UI
+config:
+
+http:
+  # Secrets are defined in the file secrets.yaml
+  api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  include_used_components: true
+
+# mqtt configuration
+mqtt:
+  broker: 192.168.0.39
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+#conversation:
+
+# database settings for history
+recorder:
+  purge_keep_days: 1
+  exclude:
+    entities:
+      - sensor.time
+      - sensor.date
+      - sensor.date__time
+      - sensor.date_template
+      - sensor.time__date
+      - sensor.time_utc
+      - sensor.weather_daily_summary
+      - sensor.weather_hourly_summary
+      - weather.dark_sky
+
+
+      
+      
+# Enables support for tracking state changes over time
+history:
+  exclude:
+    entities:
+      - sensor.time
+      - sensor.date
+      - sensor.date__time
+      - sensor.date_template
+      - sensor.time__date
+      - sensor.time_utc
+      - sensor.weather_daily_summary
+      - sensor.weather_hourly_summary
+      - weather.dark_sky
+
+# View all events in a logbook
+logbook:
+  exclude:
+    entities:
+      - sensor.time
+      - sensor.date
+      - sensor.date__time
+      - sensor.date_template
+      - sensor.time__date
+      - sensor.time_utc
+      - sensor.weather_daily_summary
+      - sensor.weather_hourly_summary
+      - weather.dark_sky
+
+custom_updater:
+  track:
+    - cards
+    - components
+  card_urls:
+    - https://raw.githubusercontent.com/kalkih/mini-media-player/master/tracker.json
+      
+# Enables a map showing the location of tracked devices
+#map:
+
+# Track the sun
+sun:
+
+camera: !include_dir_merge_list components/cameras/
+
+# zigbee components integrated through deconz on a local docker container
+deconz:
+  host: 192.168.0.39
+  port: !secret deconz_port 
+
+# Einkauflisten Unterstzung
+shopping_list:
+
+# Telegram Bot
+
+# Example configuration.yaml entry for the Telegram Bot
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_api_key
+    allowed_chat_ids:
+      - !secret chat_id_ede
+      - !secret chat_id_steffi
+
+
+
+# Wetter wird nicht mehr in home assistant getrackt dafür gibt es wetter online
+#weather: !include_dir_merge_list components/weather/
+    
+# Sensors
+sensor: !include_dir_merge_list components/sensors/
+
+
+
+vacuum:
+  - platform: xiaomi_miio
+    name: Fernando
+    host: 192.168.0.109
+    token: !secret fernando_token
+
+
+notify:
+  - platform: webostv
+    host: 192.168.0.192
+    name: LG Nachrichten
+    filename: webostv.conf
+  - name: Telegram_Ede
+    platform: telegram
+    chat_id: !secret chat_id_ede
+  - name: Telegram_Steffi
+    platform: telegram
+    chat_id: !secret chat_id_steffi
+    
+# Example configuration.yaml entries
+input_text:
+  text1:
+    name: Text TV
+    initial: Benachrichtigung
+
+
+media_player:
+  - platform: webostv
+    host: 192.168.0.192
+    name: LG TV 
+    timeout: 5
+    filename: webostv.conf
+    customize:
+      sources:
+        - LiveTV
+        - netflix
+        - spotify
+        - PS3
+        - Wii U
+        - PC
+        - YouTube
+  - platform: soundtouch
+    host: 192.168.0.213
+    port: 8090
+    name: Soundtouch Badezimmer
+    
+input_select:
+  presets:
+     name: 'SoundTouch Presets:'
+     options:
+     - None
+     - 1Live
+     - Radio Hochstift
+     - Party Hitmix
+     - Radio Paloma
+     - Weihnachten
+#     - Preset 6
+  kanal:
+    name: 'Kanal Auswahl:'
+    options:
+    - None
+    - Pro7
+    - VIVA/CC
+
+
+    
+# countdown timer
+timer:
+  countdown:
+    name: Countdown
+    duration: '00:30:00'
+    icon: mdi:clock
+
+
+input_number:
+# Stunden für LED countdown
+  slider1:
+    name: Stunden
+    unit_of_measurement: h
+    initial: 0
+    min: 0
+    max: 12
+    step: 1
+# Minuten für LED Countdown
+  slider2:
+    name: Minuten
+    unit_of_measurement: min
+    initial: 30
+    min: 0
+    max: 59
+    step: 1
+# Lautstärke Bose Wahnzimmer
+  bose_volume:
+    name: Lautstärke
+    min: 0.0
+    max: 1.0
+    step: 0.01
+# Stunden für Wecker
+  alarmhour:
+    name: Hour
+    icon: mdi:timer
+    min: 0
+    max: 23
+    step: 1
+# Minuten für Wecker
+  alarmminutes:
+    name: Minutes
+    icon: mdi:timer
+    min: 0
+    max: 59
+    step: 5
+# Geschwindigkeit LED Effekte
+  speed:
+    name: Geschwindigkeit
+    icon: mdi:clock-fast
+    min: 1
+    max: 10
+    step: 1
+# Timer für Sonoff
+  ladezeit:
+    name: Ladezeit Ede
+    icon: mdi:alarm
+    min: 0
+    max: 240
+    step: 10
+# Timer für Sonoff2
+  ladezeit2:
+    name: Ladezeit Steffi
+    icon: mdi:alarm
+    min: 0
+    max: 240
+    step: 10
+
+input_boolean:
+# Nur Wochentags wecken
+  alarmweekday:
+    name: Nur Wochentags
+    icon: mdi:calendar
+# Robotrock Zonenauswahl
+  wohnzimmer:
+    name: Wohnzimmer saugen
+  esszimmer:
+    name: Esszimmer saugen
+  bad:
+    name: Badezimmer saugen
+  kueche:
+    name: Küche saugen
+  schlafzimmer:
+    name: Schlafzimmer saugen
+  flur:
+    name: Flur saugen
+#dummmies bis die gesteuerten Lampen hinzukommen
+  licht_wohnzimmer:
+    name: Wohnzimmer dummy
+  licht_esszimmer:
+    name: Esszimmer dummy
+  licht_bad:
+    name: Badezimmer dummy
+  licht_kueche:
+    name: Küche dummy
+  licht_schlafzimmer:
+    name: Schlafzimmer dummy
+  licht_flur:
+    name: Flur dummy
+  licht_balkon:
+    name: Balkon dummy
+  licht_abstell:
+    name: Abstellraum dummy
+  licht_arbeit:
+    name: Arbeitszimmer dummy
+# used to track long press on aqara button
+  schlafzimmer_led_dimming:
+    name: Schlafzimmer LED Dimmer an
+  wohnzimmer_led_dimming:
+    name: Wohnzimmer LED Dimmer an
+    
+# power outlet switches
+switch:
+  - platform: mqtt
+    name: "Sonoff 1"
+    state_topic: "stat/sonoff-001/POWER"
+    command_topic: "cmnd/sonoff-001/POWER"
+    availability_topic: "tele/sonoff-001/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: true
+  - platform: mqtt
+    name: "Sonoff 2"
+    state_topic: "stat/sonoff-002/POWER"
+    command_topic: "cmnd/sonoff-002/POWER"
+    availability_topic: "tele/sonoff-002/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: true
+# Pi-Hole switch
+  - platform: command_line
+    switches:
+      pihole_switch:
+        command_on: "curl -X GET 'http://localhost/admin/api.php?enable&auth='"
+        command_off: "curl -X GET 'http://localhost/admin/api.php?disable=3600&auth='"
+        command_state: "curl -X GET 'http://localhost/admin/api.php?status'"
+        value_template: "{{ value_json.status == 'enabled' }}"
+
+# lights
+light:
+  - platform: mqtt
+    name: "Wohnzimmer LED-Leiste"
+    state_topic: "homie/led-strip-kitchen/h801/power"
+    command_topic: "homie/led-strip-kitchen/h801/power/set"
+    brightness_state_topic: "homie/led-strip-kitchen/h801/rgbbrightness"
+    brightness_command_topic: "homie/led-strip-kitchen/h801/rgbbrightness/set"
+    rgb_state_topic: "homie/led-strip-kitchen/h801/rgb"
+    rgb_command_topic: "homie/led-strip-kitchen/h801/rgb/set"
+    on_command_type: "first"
+    effect_command_topic: "homie/led-strip-kitchen/h801/effect/set"
+    effect_state_topic: "homie/led-strip-kitchen/h801/effect"
+    effect_list:
+    - "None"
+    - "Fade"
+    - "Cycle"
+    - "Blink"
+    - "Pulse"
+    - "Music"
+    payload_on: "true"
+    payload_off: "false"
+    brightness_scale: 100
+    optimistic: false
+#  - platform: mqtt
+#    name: "Küche LED Warmweiss"
+#    state_topic: "homie/led-strip-kitchen/h801/white"
+#    command_topic: "homie/led-strip-kitchen/h801/white/set"
+#    brightness_state_topic: "homie/led-strip-kitchen/h801/wbrightness"
+#    brightness_command_topic: "homie/led-strip-kitchen/h801/wbrightness/set"
+#    brightness_scale: 100
+#    payload_on: "true"
+#    payload_off: "false"
+  - platform: xiaomi_miio
+    name: Wohnzimmer LED
+    host: 192.168.0.129
+    token: !secret wohnzimmer_led_token
+  - platform: xiaomi_miio
+    name: Schlafzimmer LED
+    host: 192.168.0.69
+    token: !secret schlafzimmer_led_token
+
+# Text to speech
+#tts:
+#  - platform: google
+
+# Cloud
+#cloud:
+
+weblink: !include components/weblink.yaml
+
+group: !include components/groups/groups.yaml
+automation: !include_dir_merge_list components/automations/
+script: !include_dir_merge_named components/scripts/

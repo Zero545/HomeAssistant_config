@@ -1,0 +1,129 @@
+# Switch: Light toggles
+
+- alias: 'Toggle bedroom lamp from switch'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: lumiremoteb1acn01
+      event: 1002
+  action:
+    service: light.toggle
+    entity_id: light.schlafzimmer_led
+
+- alias: 'Toggle livingroom lamp from switch'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: lumiremoteb1acn01_2
+      event: 1002
+  action:
+    service: light.toggle
+    entity_id: light.wohnzimmer_led
+    
+# Dimming control
+
+- alias: 'Turn bedroom lamp dimming on'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: lumiremoteb1acn01
+      event: 1001
+  action:
+    service: input_boolean.turn_on
+    entity_id: input_boolean.schlafzimmer_led_dimming
+
+- alias: 'Turn bedroom lamp dimming off'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: lumiremoteb1acn01
+      event: 1003
+  action:
+    service: input_boolean.turn_off
+    entity_id: input_boolean.schlafzimmer_led_dimming
+
+- alias: 'Turn livingroom lamp dimming on'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: lumiremoteb1acn01_2
+      event: 1001
+  action:
+    service: input_boolean.turn_on
+    entity_id: input_boolean.wohnzimmer_led_dimming
+
+- alias: 'Turn livingroom lamp dimming off'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: lumiremoteb1acn01_2
+      event: 1003
+  action:
+    service: input_boolean.turn_off
+    entity_id: input_boolean.wohnzimmer_led_dimming
+
+# Dim up, if off    
+    
+- alias: 'Dim up bedroom lamp'
+  initial_state: 'on'
+  trigger:
+  - platform: state
+    entity_id: input_boolean.schlafzimmer_led_dimming
+    to: 'on'
+  condition:
+    - condition: state
+      entity_id: light.schlafzimmer_led
+      state: 'off'
+  action:
+    service: script.dim_up_looper
+    data_template:
+      stufe: 0
+      bool_id: input_boolean.schlafzimmer_led_dimming
+      ent: light.schlafzimmer_led
+
+- alias: 'Dim up livingroom lamp'
+  initial_state: 'on'
+  trigger:
+  - platform: state
+    entity_id: input_boolean.wohnzimmer_led_dimming
+    to: 'on'
+  condition:
+    - condition: state
+      entity_id: light.wohnzimmer_led
+      state: 'off'
+  action:
+    service: script.dim_up_looper
+    data_template:
+      stufe: 0
+      bool_id: input_boolean.wohnzimmer_led_dimming
+      ent: light.wohnzimmer_led
+# Dim down, if on 
+## TODO: Dim down Skript fehlt noch!!!
+- alias: 'Dim down bedroom lamp'
+  initial_state: 'on'
+  trigger:
+  - platform: state
+    entity_id: input_boolean.schlafzimmer_led_dimming
+    to: 'on'
+  condition:
+    - condition: state
+      entity_id: light.schlafzimmer_led
+      state: 'on'
+  action:
+    service: script.dim_up_looper
+    data_template:
+      stufe: 0
+      bool_id: input_boolean.schlafzimmer_led_dimming
+      ent: light.schlafzimmer_led

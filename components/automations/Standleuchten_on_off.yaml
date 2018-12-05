@@ -1,0 +1,24 @@
+# Standleuchten abends anschalten
+- id: '1519156680576'
+  alias: Licht an bei Sonnenuntergang
+  initial_state: true
+  hide_entity: false
+  trigger:
+  - platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: -2.5
+  condition: []
+  action:
+  - service: light.turn_on
+    entity_id: group.standleuchten
+# Standleuchten abends ausschalten
+- action:
+  - entity_id: group.standleuchten
+    service: light.turn_off
+  alias: Licht aus um 11
+  condition: []
+  id: '1520026358963'
+  trigger:
+  - at: '23:00'
+    platform: time

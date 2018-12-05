@@ -1,0 +1,12 @@
+  all_off:
+    alias: "Alles aus"
+    sequence:
+    - service: light.turn_off
+      data:
+        entity_id: group.all_lights
+    - service: media_player.turn_off
+      data_template:
+        entity_id: media_player.soundtouch_badezimmer
+    - service: media_player.turn_off
+      data_template:
+        entity_id: media_player.lg_tv

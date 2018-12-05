@@ -1,0 +1,48 @@
+  handyladen:
+    alias: Handy Laden Eduard
+    sequence:
+      - condition: template
+        value_template: '{{ states.input_number.ladezeit.state | int > 0 }}'
+      - service: homeassistant.turn_on
+        entity_id: switch.sonoff_1
+      - delay:
+          minutes: 10
+      - service: script.decrease
+  decrease:
+    alias: 10 Minuten weniger
+    sequence:
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.ladezeit
+          value: '{{ states.input_number.ladezeit.state | int - 10 }}'
+      - delay:
+          seconds: 1
+      - service: script.handyladen
+      - condition: template
+        value_template: '{{ states.input_number.ladezeit.state | int == 0 }}'
+      - service: homeassistant.turn_off
+        entity_id: switch.sonoff_1
+  handyladen2:
+    alias: Handy Laden Steffi
+    sequence:
+      - condition: template
+        value_template: '{{ states.input_number.ladezeit2.state | int > 0 }}'
+      - service: homeassistant.turn_on
+        entity_id: switch.sonoff_2
+      - delay:
+          minutes: 10
+      - service: script.decrease2
+  decrease2:
+    alias: 10 Minuten weniger
+    sequence:
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.ladezeit2
+          value: '{{ states.input_number.ladezeit2.state | int - 10 }}'
+      - delay:
+          seconds: 1
+      - service: script.handyladen2
+      - condition: template
+        value_template: '{{ states.input_number.ladezeit2.state | int == 0 }}'
+      - service: homeassistant.turn_off
+        entity_id: switch.sonoff_2

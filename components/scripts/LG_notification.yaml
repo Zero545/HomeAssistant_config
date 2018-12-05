@@ -1,0 +1,7 @@
+  hellotv:
+    alias: Hallo LG
+    sequence:
+      - service: notify.lg_nachrichten
+        data_template:
+          message: '{{ states.input_text.text1.state }}'
+#          message: "Hallo Steffi, hier spricht der Fernseher."

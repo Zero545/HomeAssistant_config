@@ -1,0 +1,31 @@
+# Soundtouch presets zugänglich machen
+- id: soundtouch_presets
+  alias: Soundtouch Preset Select
+  trigger:
+    platform: state
+    entity_id:
+      - input_select.presets
+  action:
+  - service: media_player.play_media
+    data_template:
+      entity_id: media_player.soundtouch_badezimmer   
+      media_content_id: >
+        {% if is_state("input_select.presets", "1Live") %} 1
+        {% elif is_state("input_select.presets", "Radio Hochstift") %} 2
+        {% elif is_state("input_select.presets", "Party Hitmix") %} 3
+        {% elif is_state("input_select.presets", "Radio Paloma") %} 4
+        {% elif is_state("input_select.presets", "Weihnachten") %} 5
+        {% endif %}
+      media_content_type: 'music'
+# Soundtouch ausscchalten, falls kein Preset gewählt wird
+- id: soundtouch_no_preset_selected
+  alias: Soundtouch no preset
+  trigger:
+    platform: state
+    entity_id:
+      - input_select.presets
+    to: "None"
+  action:
+  - service: media_player.turn_off
+    data_template:
+      entity_id: media_player.soundtouch_badezimmer

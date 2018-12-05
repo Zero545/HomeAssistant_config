@@ -1,0 +1,10 @@
+# Effect Speed
+- alias: 'Geschwindigkeit'
+  trigger:
+    platform: state
+    entity_id: input_number.speed
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "homie/led-strip-kitchen/h801/speed/set"
+      payload: "{{ states.input_number.speed.state }}"

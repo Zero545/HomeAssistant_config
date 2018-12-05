@@ -1,0 +1,4 @@
+- platform: random
+  name: Würfel
+  minimum: 1
+  maximum: 6

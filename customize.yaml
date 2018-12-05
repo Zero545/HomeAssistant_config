@@ -1,0 +1,68 @@
+sensor.weather_daily_low_temperature:
+ friendly_name: Temperatur min
+ icon: 'mdi:thermometer'
+sensor.weather_daily_high_temperature:
+ friendly_name: Temperatur max
+ icon: 'mdi:thermometer'
+sensor.weather_apparent_temperature:
+ friendly_name: Temperatur gefühlt
+sensor.weather_temperature:
+ friendly_name: Temperatur
+sensor.weather_summary:
+ friendly_name: Zusammenfassung
+media_player.lg_tv:
+ friendly_name: LG TV
+sun.sun:
+ friendly_name: Sonne
+sensor.moon:
+ friendly_name: Mond
+sensor.weather_hourly_summary:
+ friendly_name: Vorhersage  
+script.handyladen:
+ icon: 'mdi:battery-charging'
+light.kuche_led_warmweiss:
+ custom_ui_state_card: state-card-custom-ui
+ state_card_mode: break-slider
+ stretch_slider: true
+ hide_control: false
+ show_last_changed: false
+ slider_theme:
+   min: 0
+   max: 255
+   pin: true
+   off_when_min: true
+   report_when_not_changed: false
+light.wohnzimmer_ledleiste:
+  icon: 'mdi:led-strip'
+   
+   
+# halloween mode
+#
+#'zwave.*':
+#  icon: mdi:skull
+#'alarm_control_panel.*':
+#  icon: mdi:skull
+#'camera.*':
+#  icon: mdi:skull
+#'device_tracker.*':
+#  icon: mdi:skull
+#'input_*.*':
+#  icon: mdi:ghost
+#'light.*':
+#  icon: mdi:skull
+#'media_player.*':
+#  icon: mdi:ghost
+#'script.*':
+#  icon: mdi:skull
+#'switch.*':
+#  icon: mdi:skull
+#'automation.*':
+#  icon: mdi:ghost
+#'sensor.*':
+#  icon: mdi:ghost
+#'group.*':
+#  icon: mdi:skull
+#'calendar.*':
+#  icon: mdi:ghost
+#'climate.*':
+#  icon: mdi:ghost

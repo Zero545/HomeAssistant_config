@@ -1,0 +1,12 @@
+# Anzeige für aktuelle LG source 
+- platform: template
+  sensors:
+    lg_tv_source:
+      value_template: '{{ states.media_player.lg_tv.attributes["source"] }}'
+      friendly_name: 'LG TV Source'
+# Anzeige für aktuellen LG Kanal
+- platform: template
+  sensors:
+    lg_tv_channel:
+      value_template: '{{ states.media_player.lg_tv.attributes["media_title"] }}'
+      friendly_name: 'LG TV Kanal'

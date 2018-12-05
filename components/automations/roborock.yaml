@@ -1,0 +1,18 @@
+# Um 10 Uhr das Bad saugen
+- alias: 'Morgens Bad saugen'
+  trigger:
+  - at: '10:00'
+    platform: time
+  action:
+  - service: script.turn_on
+    entity_id: script.vacuum_kfb
+    
+# Zonenwahl startet Skript zur Reinigung
+- alias: 'Zonenreinigung automatisch starten'
+  initial_state: false
+  trigger:
+    platform: state
+    entity_id: group.zonen
+    to: 'on'
+  action:
+    service: script.vacuum_check_rooms_left

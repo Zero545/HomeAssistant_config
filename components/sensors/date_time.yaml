@@ -1,0 +1,15 @@
+# Zeit
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+    - 'date_time'
+    - 'time_date'
+    - 'time_utc'
+# Datumsanzeige
+- platform: template
+  sensors:
+    date_template:         
+      friendly_name: 'Date'
+      value_template: '{{ as_timestamp(now()) | timestamp_custom("%d.%m.%y", True) }}'
+        

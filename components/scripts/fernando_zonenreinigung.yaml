@@ -1,0 +1,184 @@
+######## roborock zone cleaning ############################################
+  vacuum_wohnzimmer:
+    alias: Wohnzimmer saugen
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.fernando
+          command: app_zoned_clean
+# Wohnzimmer x1 = Flur x2
+          params: [[25000, 27200, 28600, 31200, 1]]
+  vacuum_esszimmer:
+    alias: Esszimmer saugen
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.fernando
+          command: app_zoned_clean
+# esszimmer x1 = schlafzimmer x2, esszimmer y2 = flur y1 = schlafzimmer y2
+          params: [[23900, 25000, 28600, 27200, 1]]
+  vacuum_wohness:
+    alias: Wohn-Ess-Bereich saugen
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.fernando
+          command: app_zoned_clean
+# Wohnzimmer, Esszimmer
+          params: [[23900, 25000, 28600, 27200, 1],[25000, 27200, 28600, 31200, 1]]
+  vacuum_bad:
+    alias: Bad saugen
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.fernando
+          command: app_zoned_clean
+# Bad y1 = Flur y2, Bad x2 = wohnzimmer x3 = flur x2, bad x1 = kueche x2, leicht angepasst
+          params: [[23300, 29000, 25000, 32700, 1]] 
+  vacuum_kueche:
+    alias: Küche saugen
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.fernando
+          command: app_zoned_clean
+# Kueche y1 = Flur y2, kueche x2 = bad x1
+          params: [[19900, 28800, 23300, 32850, 1]]
+  vacuum_flur:
+    alias: Flur saugen
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.fernando
+          command: app_zoned_clean
+# Flur y2 = Bad y1 = Kueche y1, Flur y1 = schlafzimmer y2 = wohnzimmer y2, Flur x2 = Wohnzimmer x3
+          params: [[20500, 27200, 25000, 28800, 1]]
+  vacuum_kfb:
+    alias: KFB saugen
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.fernando
+          command: app_zoned_clean
+# Küche, Flur, Bad Zonen
+          params: [[19900, 28800, 23300, 32850, 1],[20500, 27200, 25000, 28800, 1],[23300, 29000, 25000, 32700, 1]]
+  vacuum_schlaf:
+    alias: Schlafzimmer saugen
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.fernando
+          command: app_zoned_clean
+#schlafzimmer y2 = flur y1 = wohnzimmer y2, schlafzimmer x2 = wohnzimmer x1
+          params: [[21000, 23200, 23900, 27200, 1]]
+### go to cleaning spot
+  vacuum_cleaning_spot:
+    alias: Zum Mülleimer
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: vacuum.fernando
+          command: app_goto_target
+          params: [22200, 30200]
+  vacuum_clean_room:
+    alias: Raum reinigen
+    sequence:
+      - condition: template
+        value_template: "{{ is_state(room_bool, 'on') }}"
+      - service: script.turn_on
+        data_template:
+          entity_id: '{{ room_cleaner }}'
+        # use delay because it takes some time for the roborock to update its state
+      - delay: '00:00:30'
+      - wait_template: "{{ (is_state('vacuum.fernando', 'docked'))or (is_state('vacuum.fernando', 'idle'))}}"
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: '{{ room_bool }}'
+      - delay: '00:00:01'
+#####start cleaning selected rooms ######
+  vacuum_selected:
+    alias: Auswahl saugen
+    sequence:
+      - service: script.vacuum_clean_kfb
+      - service: script.vacuum_clean_wohness
+      - service: script.vacuum_clean_room
+        data_template:
+          room_cleaner: script.vacuum_wohnzimmer
+          room_bool: input_boolean.wohnzimmer
+      - wait_template: "{{ is_state('script.vacuum_clean_room', 'off') }}"
+      - service: script.vacuum_clean_room
+        data_template:
+          room_cleaner: script.vacuum_esszimmer
+          room_bool: input_boolean.esszimmer
+      - wait_template: "{{ is_state('script.vacuum_clean_room', 'off') }}"
+      - service: script.vacuum_clean_room
+        data_template:
+          room_cleaner: script.vacuum_bad
+          room_bool: input_boolean.bad
+      - wait_template: "{{ is_state('script.vacuum_clean_room', 'off') }}"
+      - service: script.vacuum_clean_room
+        data_template:
+          room_cleaner: script.vacuum_kueche
+          room_bool: input_boolean.kueche
+      - wait_template: "{{ is_state('script.vacuum_clean_room', 'off') }}"
+      - service: script.vacuum_clean_room
+        data_template:
+          room_cleaner: script.vacuum_schlaf
+          room_bool: input_boolean.schlafzimmer
+      - wait_template: "{{ is_state('script.vacuum_clean_room', 'off') }}"
+      - service: script.vacuum_clean_room
+        data_template:
+          room_cleaner: script.vacuum_flur
+          room_bool: input_boolean.flur
+      - wait_template: "{{ is_state('script.vacuum_clean_room', 'off') }}"
+      - service: script.vacuum_check_rooms_left
+### if there are still rooms checked, the script to vacuum selected rooms is run again
+  vacuum_check_rooms_left:
+    alias: Räume übrig?
+    sequence:
+      - delay: '00:00:10'
+      - condition: state
+        entity_id: 'group.zonen'
+        state: 'on'
+      - service: script.vacuum_selected
+### cluster some rooms into bigger zones
+  vacuum_clean_kfb:
+    alias: KFB reinigen
+    sequence:
+      - condition: state
+        entity_id: 'input_boolean.kueche'
+        state: 'on'
+      - condition: state
+        entity_id: 'input_boolean.flur'
+        state: 'on'
+      - condition: state
+        entity_id: 'input_boolean.bad'
+        state: 'on'
+      - service: script.vacuum_kfb
+      - delay: '00:00:30'
+      - wait_template: "{{ (is_state('vacuum.fernando', 'docked'))or (is_state('vacuum.fernando', 'idle'))}}"
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: 
+            - input_boolean.kueche
+            - input_boolean.flur
+            - input_boolean.bad
+      - delay: '00:00:01'
+  vacuum_clean_wohness:
+    alias: KFB reinigen
+    sequence:
+      - condition: state
+        entity_id: 'input_boolean.wohnzimmer'
+        state: 'on'
+      - condition: state
+        entity_id: 'input_boolean.esszimmer'
+        state: 'on'
+      - service: script.vacuum_wohness
+      - delay: '00:00:30'
+      - wait_template: "{{ (is_state('vacuum.fernando', 'docked'))or (is_state('vacuum.fernando', 'idle'))}}"
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: 
+            - input_boolean.wohnzimmer
+            - input_boolean.esszimmer
+      - delay: '00:00:01'
