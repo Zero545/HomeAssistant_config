@@ -16,16 +16,30 @@ homeassistant:
 # Show links to resources in log and frontend
 #introduction:
 
+
 # Enables the frontend
 frontend:
   themes: !include components/themes.yaml
+  extra_html_url:
+    - /local/vector_icons.html
+
+lovelace:
+  mode: yaml
+
+system_health:
+
+hacs:
+  token: !secret github_token
+  python_script: true
+  theme: true
 
 # Enables configuration UI
 config:
 
-http:
+# deprecated
+#http:
   # Secrets are defined in the file secrets.yaml
-  api_password: !secret http_password
+#  api_password: !secret http_password
   # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
   # base_url: example.duckdns.org:8123
 
@@ -51,59 +65,62 @@ discovery:
 
 # database settings for history
 recorder:
-  purge_keep_days: 1
-  exclude:
+  purge_keep_days: 3
+  include:
+    domains:
+      - switch
+      - light
+      - cover
+      - binary_sensor
     entities:
-      - sensor.time
-      - sensor.date
-      - sensor.date__time
-      - sensor.date_template
-      - sensor.time__date
-      - sensor.time_utc
-      - sensor.weather_daily_summary
-      - sensor.weather_hourly_summary
-      - weather.dark_sky
+      - sensor.temperature_arbeit
+      - sensor.temperature_bad
+      - sensor.temperature_balkon
+      - sensor.temperature_kueche
+      - sensor.temperature_kuehlschrank
+      - sensor.temperature_schlafzimmer
+      - sensor.temperature_wohnzimmer
+      - sensor.weather_temperature
+      - sensor.power_spuelmaschine
 
 
       
       
 # Enables support for tracking state changes over time
 history:
-  exclude:
-    entities:
-      - sensor.time
-      - sensor.date
-      - sensor.date__time
-      - sensor.date_template
-      - sensor.time__date
-      - sensor.time_utc
-      - sensor.weather_daily_summary
-      - sensor.weather_hourly_summary
-      - weather.dark_sky
 
 # View all events in a logbook
 logbook:
-  exclude:
-    entities:
-      - sensor.time
-      - sensor.date
-      - sensor.date__time
-      - sensor.date_template
-      - sensor.time__date
-      - sensor.time_utc
-      - sensor.weather_daily_summary
-      - sensor.weather_hourly_summary
-      - weather.dark_sky
 
-custom_updater:
-  track:
-    - cards
-    - components
-  card_urls:
-    - https://raw.githubusercontent.com/kalkih/mini-media-player/master/tracker.json
+#depracated
+#custom_updater:
+#  track:
+#    - cards
+#    - components
+#  card_urls:
+#    - https://raw.githubusercontent.com/kalkih/mini-media-player/master/tracker.json
+#    - https://raw.githubusercontent.com/kalkih/mini-graph-card/master/tracker.json
       
 # Enables a map showing the location of tracked devices
 #map:
+
+homematic:
+  interfaces:
+    wireless:
+      host: 192.168.0.11
+      resolvenames: json
+      username: Admin
+      password: !secret homematic_password
+#      callback_ip: 192.168.0.39
+  hosts:
+    ccu3:
+      host: 192.168.0.11
+      username: Admin
+      password: !secret homematic_password
+
+
+
+wake_on_lan:
 
 # Track the sun
 sun:
@@ -141,15 +158,19 @@ sensor: !include_dir_merge_list components/sensors/
 vacuum:
   - platform: xiaomi_miio
     name: Fernando
-    host: 192.168.0.109
+    host: 192.168.0.108
     token: !secret fernando_token
 
 
 notify:
   - platform: webostv
-    host: 192.168.0.192
+    host: 192.168.0.22
     name: LG Nachrichten
     filename: webostv.conf
+    turn_on_action:
+      service: wake_on_lan.send_magic_packet
+      data:
+        mac: "14:C9:13:02:59:08"
   - name: Telegram_Ede
     platform: telegram
     chat_id: !secret chat_id_ede
@@ -166,23 +187,29 @@ input_text:
 
 media_player:
   - platform: webostv
-    host: 192.168.0.192
+    host: 192.168.0.22
     name: LG TV 
     timeout: 5
     filename: webostv.conf
+    turn_on_action:
+      service: wake_on_lan.send_magic_packet
+      data:
+        mac: "14:C9:13:02:59:08"
     customize:
       sources:
         - LiveTV
         - netflix
         - spotify
-        - PS3
-        - Wii U
-        - PC
+        - Bose
         - YouTube
   - platform: soundtouch
     host: 192.168.0.213
     port: 8090
     name: Soundtouch Badezimmer
+  - platform: soundtouch
+    host: 192.168.0.12
+    port: 8090
+    name: Bose Wohnzimmer
     
 input_select:
   presets:
@@ -194,7 +221,7 @@ input_select:
      - Party Hitmix
      - Radio Paloma
      - Weihnachten
-#     - Preset 6
+     - Spotify
   kanal:
     name: 'Kanal Auswahl:'
     options:
@@ -256,6 +283,13 @@ input_number:
     min: 1
     max: 10
     step: 1
+# Geschwindigkeit LED Effekte Küche
+  speed_kitchen:
+    name: Küche Geschwindigkeit
+    icon: mdi:clock-fast
+    min: 1
+    max: 10
+    step: 1
 # Timer für Sonoff
   ladezeit:
     name: Ladezeit Ede
@@ -289,30 +323,39 @@ input_boolean:
     name: Schlafzimmer saugen
   flur:
     name: Flur saugen
-#dummmies bis die gesteuerten Lampen hinzukommen
-  licht_wohnzimmer:
-    name: Wohnzimmer dummy
-  licht_esszimmer:
-    name: Esszimmer dummy
-  licht_bad:
-    name: Badezimmer dummy
-  licht_kueche:
-    name: Küche dummy
-  licht_schlafzimmer:
-    name: Schlafzimmer dummy
-  licht_flur:
-    name: Flur dummy
-  licht_balkon:
-    name: Balkon dummy
-  licht_abstell:
-    name: Abstellraum dummy
-  licht_arbeit:
-    name: Arbeitszimmer dummy
+  arbeitszimmer:
+    name: Arbeitszimmer saugen
 # used to track long press on aqara button
   schlafzimmer_led_dimming:
     name: Schlafzimmer LED Dimmer an
   wohnzimmer_led_dimming:
     name: Wohnzimmer LED Dimmer an
+# nodered automation triggers
+  alles_zu:
+    name: Alle Rollos zu
+  alles_auf:
+    name: Alle Rollos auf
+  wohnzimmer_zu:
+    name: Wohnzimmer zu
+  wohnzimmer_auf:
+    name: Wohnzimmer auf
+# nodered tv switches
+  ps3:
+    name: Playstation3
+  wiiu:
+    name: Wii U
+  tv:
+    name: TV
+  netflix:
+    name: Netflix
+  pc:
+    name: PC
+  snes:
+    name: SNES
+  spotify:
+    name: Spotify
+  youtube:
+    name: Youtube
     
 # power outlet switches
 switch:
@@ -386,8 +429,41 @@ light:
     token: !secret wohnzimmer_led_token
   - platform: xiaomi_miio
     name: Schlafzimmer LED
-    host: 192.168.0.69
+    host: 192.168.0.19
     token: !secret schlafzimmer_led_token
+#christmas light led strip
+  - platform: mqtt
+    name: "Küche LED-Leiste"
+    state_topic: "homie/led-strip-christmas/h801/power"
+    command_topic: "homie/led-strip-christmas/h801/power/set"
+    brightness_state_topic: "homie/led-strip-christmas/h801/rgbbrightness"
+    brightness_command_topic: "homie/led-strip-christmas/h801/rgbbrightness/set"
+    rgb_state_topic: "homie/led-strip-christmas/h801/rgb"
+    rgb_command_topic: "homie/led-strip-christmas/h801/rgb/set"
+    on_command_type: "first"
+    effect_command_topic: "homie/led-strip-christmas/h801/effect/set"
+    effect_state_topic: "homie/led-strip-christmas/h801/effect"
+    effect_list:
+    - "None"
+    - "Fade"
+    - "Cycle"
+    - "Blink"
+    - "Pulse"
+    - "Music"
+    payload_on: "true"
+    payload_off: "false"
+    brightness_scale: 100
+    optimistic: false
+  - platform: mqtt
+    name: "Küche LED Warmweiss"
+    state_topic: "homie/led-strip-christmas/h801/white"
+    command_topic: "homie/led-strip-christmas/h801/white/set"
+    brightness_state_topic: "homie/led-strip-christmas/h801/wbrightness"
+    brightness_command_topic: "homie/led-strip-christmas/h801/wbrightness/set"
+    brightness_scale: 100
+    payload_on: "true"
+    payload_off: "false"
+
 
 # Text to speech
 #tts:

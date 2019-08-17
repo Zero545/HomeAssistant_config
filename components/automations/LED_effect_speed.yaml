@@ -8,3 +8,12 @@
     data_template:
       topic: "homie/led-strip-kitchen/h801/speed/set"
       payload: "{{ states.input_number.speed.state }}"
+- alias: 'Baum Geschwindigkeit'
+  trigger:
+    platform: state
+    entity_id: input_number.speed_christmas
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "homie/led-strip-christmas/h801/speed/set"
+      payload: "{{ states.input_number.speed_christmas.state }}"

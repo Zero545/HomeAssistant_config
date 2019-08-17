@@ -81,7 +81,7 @@
       - input_boolean.kueche
       - input_boolean.schlafzimmer
       - input_boolean.flur
-      - script.vacuum_selected
+      - input_boolean.arbeitszimmer
 # zur Prüfung, ob eine der Zonen noch gewählt ist
   Zonen:
     name: Zonenliste

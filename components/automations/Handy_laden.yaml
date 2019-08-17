@@ -3,7 +3,7 @@
   alias: Sonoff 1 Cancel Script on off
   trigger:
   - platform: state
-    entity_id: switch.sonoff_1
+    entity_id: switch.steckdose_ede
     to: 'off'
   action:
   - entity_id: script.handyladen
@@ -13,17 +13,17 @@
   alias: Sonoff 2 Cancel Script on off
   trigger:
   - platform: state
-    entity_id: switch.sonoff_2
+    entity_id: switch.steckdose_steffi
     to: 'off'
   action:
   - entity_id: script.handyladen2
     service: script.turn_off
-# Steffis Steckdose immer nach 2 Stunden abschalten, wenn nichts eingestellt ist
+# Steffis Steckdose immer nach 1 Stunde abschalten, wenn nichts eingestellt ist
 - id: autotimer_steffi
-  alias: Sonoff 2 two hour default
+  alias: Sonoff 2 one hour default
   trigger:
   - platform: state
-    entity_id: switch.sonoff_2
+    entity_id: switch.steckdose_steffi
     to: 'on'
   condition: 
   - condition: state
@@ -33,6 +33,24 @@
   - service: input_number.set_value
     data_template:
       entity_id: input_number.ladezeit2
-      value: '120'
+      value: '60'
   - entity_id: script.handyladen2
+    service: script.turn_on
+# Edes Steckdose immer nach 2 Stunden abschalten, wenn nichts eingestellt ist
+- id: autotimer_ede
+  alias: Sonoff 1 two hour default
+  trigger:
+  - platform: state
+    entity_id: switch.steckdose_ede
+    to: 'on'
+  condition: 
+  - condition: state
+    entity_id: script.handyladen
+    state: 'off'
+  action:
+  - service: input_number.set_value
+    data_template:
+      entity_id: input_number.ladezeit
+      value: '120'
+  - entity_id: script.handyladen
     service: script.turn_on

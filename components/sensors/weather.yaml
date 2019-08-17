@@ -1,19 +1,18 @@
 # Wetter wird nicht mehr in home assistant getrackt dafür gibt es wetter online
 
 # Wetter Anzeige
-#- platform: darksky
-#  api_key: !secret darksky_api_key
-#  update_interval: '00:05:00'
-#  name: Weather
-#  language: de
-#  monitored_conditions:
-#    - summary
-#    - temperature
-#    - apparent_temperature
-#    - visibility
-#    - hourly_summary
-#    - daily_summary
-#    - temperature_high
-#    - temperature_low
+- platform: darksky
+  api_key: !secret darksky_api_key
+  scan_interval: '00:05:00'
+  name: Weather
+  language: de
+  monitored_conditions:
+    - summary
+# clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, or partly-cloudy-night. (Developers should ensure that a sensible default is defined, as additional values, such as hail, thunderstorm, or tornado
+    - icon
+    - temperature
+    - cloud_cover
+    - humidity
+    - pressure
 # Mond
 #- platform: moon
