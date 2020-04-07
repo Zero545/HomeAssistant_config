@@ -1,0 +1,6 @@
+- platform: mqtt
+  name: "Lunos Modus"
+  state_topic: "home/lunos/mode"
+- platform: mqtt
+  name: "Lunos Stufe"
+  state_topic: "home/lunos/stufe/wohn"

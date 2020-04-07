@@ -38,7 +38,7 @@
     service: script.turn_on
 # Edes Steckdose immer nach 2 Stunden abschalten, wenn nichts eingestellt ist
 - id: autotimer_ede
-  alias: Sonoff 1 two hour default
+  alias: Sonoff 1 one hour default
   trigger:
   - platform: state
     entity_id: switch.steckdose_ede
@@ -51,6 +51,6 @@
   - service: input_number.set_value
     data_template:
       entity_id: input_number.ladezeit
-      value: '120'
+      value: '60'
   - entity_id: script.handyladen
     service: script.turn_on

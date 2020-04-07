@@ -1,0 +1,20 @@
+# Bose Lautstärke einstellen
+- alias: 'Lautstärke'
+  trigger:
+    platform: state
+    entity_id: input_number.bose_wohnn_volume
+  action:
+    service: media_player.volume_set
+    data_template:
+      entity_id: media_player.bose_wohnzimmer 
+      volume_level: "{{ states.input_number.bose_wohn_volume.state }}"
+
+- alias: 'Bose Volume Changed'
+  trigger:
+    platform: state
+    entity_id: sensor.soundtouch_wohnzimmer_volume
+  action:
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.bose_wohn_volume
+        value: "{{ states.media_player.bose_wohnzimmer.attributes.volume_level }}"

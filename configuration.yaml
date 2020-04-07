@@ -19,19 +19,17 @@ homeassistant:
 
 # Enables the frontend
 frontend:
-  themes: !include components/themes.yaml
+  themes: !include_dir_merge_named themes
   extra_html_url:
     - /local/vector_icons.html
 
 lovelace:
   mode: yaml
 
-system_health:
+default_config:
 
 hacs:
   token: !secret github_token
-  python_script: true
-  theme: true
 
 # Enables configuration UI
 config:
@@ -65,7 +63,8 @@ discovery:
 
 # database settings for history
 recorder:
-  purge_keep_days: 3
+  db_url: !secret mariadb_url
+  purge_keep_days: 7
   include:
     domains:
       - switch
@@ -76,12 +75,35 @@ recorder:
       - sensor.temperature_arbeit
       - sensor.temperature_bad
       - sensor.temperature_balkon
-      - sensor.temperature_kueche
+      - sensor.temperature_flur
       - sensor.temperature_kuehlschrank
       - sensor.temperature_schlafzimmer
       - sensor.temperature_wohnzimmer
+      - sensor.humidity_arbeit
+      - sensor.humidity_bad
+      - sensor.humidity_balkon
+      - sensor.humidity_flur
+      - sensor.humidity_kuehlschrank
+      - sensor.humidity_schlafzimmer
+      - sensor.humidity_wohnzimmer
+      - sensor.pressure_arbeit
+      - sensor.pressure_bad
+      - sensor.pressure_balkon
+      - sensor.pressure_flur
+      - sensor.pressure_kuehlschrank
+      - sensor.pressure_schlafzimmer
+      - sensor.pressure_wohnzimmer
+      - sensor.temperature_oben
+      - sensor.temperature_center
+      - sensor.humidity_center
+      - sensor.humidity_oben
+      - sensor.temp_mitte
+      - sensor.temp_unten
+      - sensor.feuchtigkeit
       - sensor.weather_temperature
       - sensor.power_spuelmaschine
+      - sensor.spannung_schlaf
+      - sensor.spannung_wohn
 
 
       
@@ -92,14 +114,6 @@ history:
 # View all events in a logbook
 logbook:
 
-#depracated
-#custom_updater:
-#  track:
-#    - cards
-#    - components
-#  card_urls:
-#    - https://raw.githubusercontent.com/kalkih/mini-media-player/master/tracker.json
-#    - https://raw.githubusercontent.com/kalkih/mini-graph-card/master/tracker.json
       
 # Enables a map showing the location of tracked devices
 #map:
@@ -124,8 +138,6 @@ wake_on_lan:
 
 # Track the sun
 sun:
-
-camera: !include_dir_merge_list components/cameras/
 
 # zigbee components integrated through deconz on a local docker container
 deconz:
@@ -202,6 +214,7 @@ media_player:
         - spotify
         - Bose
         - YouTube
+        - Disney+
   - platform: soundtouch
     host: 192.168.0.213
     port: 8090
@@ -229,14 +242,26 @@ input_select:
     - Pro7
     - VIVA/CC
 
+#upnp:
+#  sensors: true
+#  local_ip: 192.168.0.39
 
+stream:
+ffmpeg:
+camera:
+  - platform: ffmpeg
+    name: edgar
+    input: -rtsp_transport tcp -i rtsp://192.168.0.42/ch0_0.h264
+    extra_arguments: -vf "transpose=1"
     
 # countdown timer
 timer:
-  countdown:
-    name: Countdown
-    duration: '00:30:00'
-    icon: mdi:clock
+  waschmaschine:
+    name: Waschzeit
+    icon: mdi:washing-machine
+  trockner:
+    name: Trockenzeit
+    icon: mdi:tumble-dryer
 
 
 input_number:
@@ -256,8 +281,14 @@ input_number:
     min: 0
     max: 59
     step: 1
-# Lautstärke Bose Wahnzimmer
+# Lautstärke Bose Badezimmer
   bose_volume:
+    name: Lautstärke
+    min: 0.0
+    max: 1.0
+    step: 0.01
+# Lautstärke Bose Wohnzimmer
+  bose_wohn_volume:
     name: Lautstärke
     min: 0.0
     max: 1.0
@@ -276,6 +307,13 @@ input_number:
     min: 0
     max: 59
     step: 5
+# Minuten für Lüftung
+  lunosminutes:
+    name: Minutes
+    icon: mdi:timer
+    min: 0
+    max: 720
+    step: 20
 # Geschwindigkeit LED Effekte
   speed:
     name: Geschwindigkeit
@@ -381,14 +419,6 @@ switch:
     payload_available: "Online"
     payload_not_available: "Offline"
     retain: true
-# Pi-Hole switch
-  - platform: command_line
-    switches:
-      pihole_switch:
-        command_on: "curl -X GET 'http://localhost/admin/api.php?enable&auth='"
-        command_off: "curl -X GET 'http://localhost/admin/api.php?disable=3600&auth='"
-        command_state: "curl -X GET 'http://localhost/admin/api.php?status'"
-        value_template: "{{ value_json.status == 'enabled' }}"
 
 # lights
 light:
@@ -463,6 +493,11 @@ light:
     brightness_scale: 100
     payload_on: "true"
     payload_off: "false"
+  - platform: mqtt
+    name: "Küche Spots"
+    command_topic: "cmnd/tasmota/IRSend"
+    payload_on: '{"Protocol":"NEC","Bits":32,"Data":"0x01FE48B7","DataLSB":"0x807F12ED","Repeat":0}'
+    payload_off: '{"Protocol":"NEC","Bits":32,"Data":"0x01FE58A7","DataLSB":"0x807F1AE5","Repeat":0}'
 
 
 # Text to speech
@@ -471,8 +506,6 @@ light:
 
 # Cloud
 #cloud:
-
-weblink: !include components/weblink.yaml
 
 group: !include components/groups/groups.yaml
 automation: !include_dir_merge_list components/automations/

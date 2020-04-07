@@ -1,0 +1,25 @@
+# Telegram Befehle
+
+- alias: 'Waschmaschine fertig'
+  trigger:
+    platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.waschmaschine
+  action:
+    - service: telegram_bot.send_message
+      data_template:
+        message: Waschmaschine fertig
+        target: 35139338
+
+- alias: 'Trockner fertig'
+  trigger:
+    platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.trockner
+  action:
+    - service: telegram_bot.send_message
+      data_template:
+        message: Trockner fertig
+        target: 35139338

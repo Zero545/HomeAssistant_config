@@ -1,3 +1,0 @@
-# Pi-Hole component
-- platform: pi_hole
-  host: localhost

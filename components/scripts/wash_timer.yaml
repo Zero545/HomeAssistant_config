@@ -1,0 +1,10 @@
+  restart_timer:
+    alias: Start timer
+    sequence:
+      - service: timer.cancel
+        data_template:
+          entity_id: '{{ entity }}'
+      - service: timer.start
+        data_template:
+          entity_id: '{{ entity }}'
+          duration: '{{ time }}'

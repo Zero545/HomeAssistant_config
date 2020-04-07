@@ -1,20 +1,30 @@
 # Theme wechseln für einen night mode
-- alias: Automatic Theme Change
+#- alias: Automatic Theme Change
+#  trigger:
+#    - platform: homeassistant
+#      event: start
+#    - platform: state
+#      entity_id: sun.sun
+#      to: above_horizon
+#    - platform: state
+#      entity_id: sun.sun
+#      to: below_horizon
+#  action:
+#    - service_template: frontend.set_theme
+#      data_template:
+#        name: >
+#          {% if states.sun.sun.state == "above_horizon" %}
+#            default
+#          {% else %}
+#            darkred
+#          {% endif %}
+- id: set_theme_on_startup
+  alias: Set Theme on Startup
+  description: Set theme on startup
   trigger:
-    - platform: homeassistant
-      event: start
-    - platform: state
-      entity_id: sun.sun
-      to: above_horizon
-    - platform: state
-      entity_id: sun.sun
-      to: below_horizon
+  - event: start
+    platform: homeassistant
   action:
-    - service_template: frontend.set_theme
-      data_template:
-        name: >
-          {% if states.sun.sun.state == "above_horizon" %}
-            default
-          {% else %}
-            darkred
-          {% endif %}
+  - service: frontend.set_theme
+    data:
+      name: amoled_modified

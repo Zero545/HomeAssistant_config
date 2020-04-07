@@ -1,0 +1,8 @@
+- platform: mqtt
+  name: "Temp mitte"
+  state_topic: "home/edgar/temperature/mitte"
+  unit_of_measurement: '°C'
+- platform: mqtt
+  name: "Temp unten"
+  state_topic: "home/edgar/temperature/unten"
+  unit_of_measurement: '°C'

@@ -1,26 +1,14 @@
-  default_view:
-    view: yes
-    icon: mdi:home
-    entities:
-      - group.standleuchten
-      - group.led_leisten
-      - group.steckdosen
-#      - script.all_off
-      - switch.pihole_switch
   Roborock_view:
-    view: yes
     icon: mdi:robot-vacuum
     entities:
       - group.roborock
       - group.zonen_reinigung
   Media:
-    view: yes
     icon: mdi:television
     entities:
     - group.fernseher
     - group.soundtouch
   Alarm:
-    view: yes
     icon: mdi:alarm
     entities:
       - group.wecker
@@ -29,6 +17,7 @@
     entities:
     - light.schlafzimmer_led
     - light.wohnzimmer_led
+    - switch.steckdose_ersatz
   LED Leisten:
     - light.wohnzimmer_ledleiste
     - input_number.speed
@@ -56,7 +45,6 @@
       - script.hellotv
   Automatisierung:
     name: Automatisierung
-    view: yes
     icon: mdi:ninja
     entities:
     - automation.licht_an_bei_sonnenuntergang

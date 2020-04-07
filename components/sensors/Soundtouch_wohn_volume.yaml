@@ -1,0 +1,6 @@
+# Überwachen von soundtouch Lautstärke
+- platform: template
+  sensors:
+    soundtouch_wohnzimmer_volume:
+      value_template: '{{ states.media_player.bose_wohnzimmer.attributes.volume_level|float }}'
+      friendly_name: 'Soundtouch Wohnzimmer Volume'
