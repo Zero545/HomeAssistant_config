@@ -196,25 +196,23 @@ input_text:
     name: Text TV
     initial: Benachrichtigung
 
+webostv:
+  host: 192.168.0.22
+  name: LG TV 
+  turn_on_action:
+    service: wake_on_lan.send_magic_packet
+    data:
+      mac: "14:C9:13:02:59:08"
+  customize:
+    sources:
+      - LiveTV
+      - netflix
+      - spotify
+      - Bose
+      - YouTube
+      - Disney+
 
 media_player:
-  - platform: webostv
-    host: 192.168.0.22
-    name: LG TV 
-    timeout: 5
-    filename: webostv.conf
-    turn_on_action:
-      service: wake_on_lan.send_magic_packet
-      data:
-        mac: "14:C9:13:02:59:08"
-    customize:
-      sources:
-        - LiveTV
-        - netflix
-        - spotify
-        - Bose
-        - YouTube
-        - Disney+
   - platform: soundtouch
     host: 192.168.0.213
     port: 8090
